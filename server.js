@@ -1,6 +1,3 @@
-// Project: Full Stack E-Commerce Application (Backend)
-// Backend Implementation in Node.js with Express.js
-
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -8,16 +5,13 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = 3000;
 
-// Middleware
 app.use(express.json());
 
-// Database connection
 mongoose.connect('mongodb://localhost:27017/ecommerce', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('Database connected')).catch(err => console.log(err));
 
-// Models
 const UserSchema = new mongoose.Schema({
   username: String,
   password: String,
@@ -55,7 +49,6 @@ const Product = mongoose.model('Product', ProductSchema);
 const Order = mongoose.model('Order', OrderSchema);
 const OrderItem = mongoose.model('OrderItem', OrderItemSchema);
 
-// Utility functions
 const authenticateToken = (req, res, next) => {
   const token = req.headers['authorization'];
   if (!token) return res.status(401).json({ message: 'Access denied' });
@@ -67,8 +60,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Routes
-// User Routes
 app.post('/register', async (req, res) => {
   const { username, password, email, address } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -110,7 +101,6 @@ app.put('/users/:id', authenticateToken, async (req, res) => {
   res.json(updatedUser);
 });
 
-// Product Routes
 app.get('/products', async (req, res) => {
   const products = await Product.find();
   res.json(products);
@@ -145,7 +135,6 @@ app.delete('/products/:id', authenticateToken, async (req, res) => {
   res.json({ message: 'Product deleted successfully' });
 });
 
-// Order Routes
 app.post('/orders', authenticateToken, async (req, res) => {
   const { items, total_amount } = req.body;
 
@@ -189,7 +178,6 @@ app.delete('/orders/:id', authenticateToken, async (req, res) => {
   res.json({ message: 'Order canceled successfully' });
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
